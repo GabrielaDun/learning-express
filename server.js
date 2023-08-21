@@ -15,25 +15,24 @@ app.use(express.static(path.join(__dirname, '/public')));
 app.get('/', (req, res) => {
   res.show('index.html');
 });
+app.get('/home', (req, res) => {
+  res.show('index.html');
+});
+
+app.use('/user', (req, res, next) => {
+  if(isAdmin()) next();
+  else res.show('login.html');
+});
+
 
 app.get('/about', (req, res) => {
   res.show('about.html');
 });
 
-app.get('/contact', (req, res) => {
-  res.show('contact.html');
-});
 
-app.get('/info', (req, res) => {
-  res.show('info.html');
-});
-
-app.get('/history', (req, res) => {
-  res.show('history.html');
-});
 
 app.use((req, res) => {
-  res.status(404).send('404 not found...');
+  res.status(404).show('404error.html');
 })
 
 
