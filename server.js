@@ -3,6 +3,11 @@ const path = require('path');
 
 const app = express();
 
+const hbs = require('express-handlebars');
+
+app.engine('.hbs', hbs());
+app.set('view engine', '.hbs');
+
 app.use((req, res, next) => {
   res.show = (name) => {
     res.sendFile(path.join(__dirname, `/views/${name}`));
@@ -24,12 +29,13 @@ app.use('/user', (req, res, next) => {
   else res.show('login.html');
 });
 
-
 app.get('/about', (req, res) => {
   res.show('about.html');
 });
 
-
+app.get('/hello/:name', (req, res) => {
+  res.render('hello', { layout: false, name: req.params.name });
+});
 
 app.use((req, res) => {
   res.status(404).show('404error.html');
