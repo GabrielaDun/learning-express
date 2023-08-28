@@ -6,9 +6,12 @@ const app = express();
 app.engine('.hbs', hbs());
 app.set('view engine', '.hbs');
 
+const multer  = require('multer')
+const upload = multer({ dest: 'public/' })
+
 app.use(express.static(path.join(__dirname, '/public')));
 
-app.use(express.urlencoded({ extended: false }));
+//app.use(express.urlencoded({ extended: false }));
 
 
 app.get('/', (req, res) => {
@@ -38,15 +41,16 @@ app.get('/history', (req, res) => {
   res.render('history');
 });
 
-app.post('/contact/send-message', (req, res) => {
+app.post('/contact/send-message', upload.single('file'), (req, res) => {
 
-  const { author, sender, title, message } = req.body;
+  const { author, sender, title, message} = req.body;
+  const file = req.file;
 
-  if(author && sender && title && message) {
-    res.send('The message has been sent!');
+  if(author && sender && title && message && file ) {
+    res.render('contact', {isSent: true, fileName: file.originalname });
   }
   else {
-    res.send('You can\'t leave fields empty!')
+    res.render('contact', {isError: true})
   }
 
 });
